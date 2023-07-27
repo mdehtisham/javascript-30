@@ -1,6 +1,10 @@
 const itemForm = document.getElementById("item-form")
 const itemInput = document.getElementById("item-input")
 const itemList = document.getElementById("item-list")
+const clearBtn = document.getElementById("clear")
+const filterSection = document.getElementById("filter")
+
+
 
 function addItem(e){
     e.preventDefault();
@@ -10,17 +14,17 @@ function addItem(e){
         alert('Please add an item')
         return;
     }
-    console.log("success")
 
     // create new list item
     const li = document.createElement('li')
     li.append(document.createTextNode(newItem))
     console.log(li)
     const button = createButton('remove-item btn-link text-red')
-    console.log(button)
     li.appendChild(button)
     itemList.appendChild(li)
     itemInput.value = ''
+
+    checkListItems()
 }
 
 
@@ -38,7 +42,41 @@ function createIcon(classes){
     return icon
 }
 
+function removeItem(e){
+    console.log(e.target)
+    if(e.target.parentElement.classList.contains('remove-item')){
+       if(confirm('Are you sure?')){
+        e.target.parentElement.parentElement.remove()
+       }
+    }
+    checkListItems();
+}
+
+function resetUI(e){
+    while(itemList.firstChild){
+        itemList.removeChild(itemList.firstChild);
+    }
+    checkListItems();
+}
+
+function checkListItems(){
+    const items = itemList.querySelectorAll('li')
+    if(!items.length){
+        clearBtn.classList.add('display-none')
+        filterSection.classList.add('display-none')
+    }else{
+        clearBtn.classList.remove('display-none')
+        filterSection.classList.remove('display-none')
+    }
+}
+
 function addEventListener(){
     itemForm.addEventListener('submit', addItem);
+    // using event deligation for removing the item
+    itemList.addEventListener('click', removeItem);
+    clearBtn.addEventListener('click', resetUI)
 }
 addEventListener();
+
+
+checkListItems();

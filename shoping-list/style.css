@@ -124,6 +124,14 @@ header h1 {
   cursor: pointer;
 }
 
+.display-none{
+  display: none;
+}
+
+.display-block{
+  display: block;
+}
+
 @media (max-width: 500px) {
   .items li {
     width: 100%;
