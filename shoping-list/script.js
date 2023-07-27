@@ -6,7 +6,7 @@ const filterSection = document.getElementById("filter")
 
 
 
-function addItem(e){
+function onAddItemSubmit(e){
     e.preventDefault();
     const newItem = itemInput.value;
     // check empty value
@@ -15,16 +15,31 @@ function addItem(e){
         return;
     }
 
+    addItemToDOM(newItem)
+    addItemToStorage(newItem)
+    
+
+    checkListItems()
+}
+
+function addItemToStorage(item){
+    let existingList = JSON.parse(localStorage.getItem('itemList'))
+    if(!existingList){
+        existingList = [];
+    }
+    existingList.push(item);
+    localStorage.setItem('itemList', JSON.stringify(existingList))
+}
+
+function addItemToDOM(item){
     // create new list item
     const li = document.createElement('li')
-    li.append(document.createTextNode(newItem))
+    li.append(document.createTextNode(item))
     console.log(li)
     const button = createButton('remove-item btn-link text-red')
     li.appendChild(button)
     itemList.appendChild(li)
     itemInput.value = ''
-
-    checkListItems()
 }
 
 
@@ -46,7 +61,10 @@ function removeItem(e){
     console.log(e.target)
     if(e.target.parentElement.classList.contains('remove-item')){
        if(confirm('Are you sure?')){
-        e.target.parentElement.parentElement.remove()
+        let items = JSON.parse(localStorage.getItem('itemList'))
+        items = items.filter(v => v !== e.target.parentElement.parentElement.textContent)
+        localStorage.setItem('itemList', JSON.stringify(items))
+        e.target.parentElement.parentElement.remove();
        }
     }
     checkListItems();
@@ -55,6 +73,10 @@ function removeItem(e){
 function resetUI(e){
     while(itemList.firstChild){
         itemList.removeChild(itemList.firstChild);
+    }
+    const existingStorgeItems = localStorage.getItem('itemList')
+    if(existingStorgeItems){
+        localStorage.removeItem('itemList')
     }
     checkListItems();
 }
@@ -83,14 +105,23 @@ function filterList(e){
     
 }
 
+function displayItemsFromStorage(){
+    const existingItems = JSON.parse(localStorage.getItem('itemList'))
+    if(existingItems){
+        existingItems.forEach(item => {
+            addItemToDOM(item)
+        })
+    }
+    checkListItems();
+}
+
 function addEventListener(){
-    itemForm.addEventListener('submit', addItem);
+    itemForm.addEventListener('submit', onAddItemSubmit);
     // using event deligation for removing the item
     itemList.addEventListener('click', removeItem);
     clearBtn.addEventListener('click', resetUI)
     filterSection.addEventListener('input', filterList)
 }
 addEventListener();
-
-
 checkListItems();
+displayItemsFromStorage();
