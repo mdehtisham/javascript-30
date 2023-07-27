@@ -70,11 +70,25 @@ function checkListItems(){
     }
 }
 
+function filterList(e){
+    const allItems = itemList.querySelectorAll('li')
+    const searchStr = e.target.value;
+    allItems.forEach(v => {
+        if(v.textContent.toLowerCase().includes(searchStr.toLowerCase())){
+            v.style.display = 'flex';
+        }else{
+            v.style.display = 'none'
+        }
+    })
+    
+}
+
 function addEventListener(){
     itemForm.addEventListener('submit', addItem);
     // using event deligation for removing the item
     itemList.addEventListener('click', removeItem);
     clearBtn.addEventListener('click', resetUI)
+    filterSection.addEventListener('input', filterList)
 }
 addEventListener();
 
