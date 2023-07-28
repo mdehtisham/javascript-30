@@ -56,8 +56,25 @@ function createIcon(classes){
     icon.className = classes
     return icon
 }
+function handleUpdateValue(e, previousValue){
+    // check if enter is pressed to save
+    if(e.keyCode === 13 || e.which === 13){
+        console.log({previousValue, new: e.target.value})
+        const items = JSON.parse(localStorage.getItem('itemList'))
+        const index = items.indexOf(previousValue)
+        items[index] = e.target.value;
+        localStorage.setItem('itemList', JSON.stringify(items))
+        clearItems()
+        displayItemsFromStorage()
+    }
+}
+function clearItems(){
+    while(itemList.firstChild){
+        itemList.removeChild(itemList.firstChild);
+    }
+}
 
-function removeItem(e){
+function onItemClick(e){
     console.log(e.target)
     if(e.target.parentElement.classList.contains('remove-item')){
        if(confirm('Are you sure?')){
@@ -66,14 +83,23 @@ function removeItem(e){
         localStorage.setItem('itemList', JSON.stringify(items))
         e.target.parentElement.parentElement.remove();
        }
+    }else{
+        if(e?.target?.firstChild?.nodeType === 3){
+            let content = e.target.firstChild.textContent;
+            e.target.firstChild.remove()
+            let inputEl = document.createElement('input');
+            inputEl?.classList.add('input-edit')
+            inputEl?.addEventListener("keypress", (e)=> handleUpdateValue(e, content))
+            inputEl.value = content;
+            e.target.insertBefore(inputEl, e.target.firstChild)
+            // e.target
+        }
     }
     checkListItems();
 }
 
 function resetUI(e){
-    while(itemList.firstChild){
-        itemList.removeChild(itemList.firstChild);
-    }
+    clearItems()
     const existingStorgeItems = localStorage.getItem('itemList')
     if(existingStorgeItems){
         localStorage.removeItem('itemList')
@@ -118,7 +144,7 @@ function displayItemsFromStorage(){
 function addEventListener(){
     itemForm.addEventListener('submit', onAddItemSubmit);
     // using event deligation for removing the item
-    itemList.addEventListener('click', removeItem);
+    itemList.addEventListener('click', onItemClick);
     clearBtn.addEventListener('click', resetUI)
     filterSection.addEventListener('input', filterList)
 }
