@@ -14,11 +14,14 @@ function onAddItemSubmit(e){
         alert('Please add an item')
         return;
     }
-
+    let allItems = JSON.parse(localStorage.getItem('itemList'))
+    if(allItems?.filter(v => v === newItem).length == 1){
+        alert('Duplicate item, detected. Change will not be made.');
+        itemInput.value = ''
+        return
+    }
     addItemToDOM(newItem)
     addItemToStorage(newItem)
-    
-
     checkListItems()
 }
 
@@ -63,6 +66,12 @@ function handleUpdateValue(e, previousValue){
         const items = JSON.parse(localStorage.getItem('itemList'))
         const index = items.indexOf(previousValue)
         items[index] = e.target.value;
+        if(items.filter(v => v === e.target.value).length > 1){
+            alert('Duplicate item, detected. Change will not be made.');
+            clearItems()
+            displayItemsFromStorage()
+            return;
+        }
         localStorage.setItem('itemList', JSON.stringify(items))
         clearItems()
         displayItemsFromStorage()

@@ -1,21 +1,24 @@
-# Shoping List
+# Shoping List App
 
-Vanilla JavaScript shopping list app from my Modern JS From The Beginning course.
+## Vanilla JavaScript shopping list app from my Modern JS From The Beginning course.
 
 This project is created to focus on working with the DOM, events, state, local storage and other fundamentals of JavaScript.
 
-Add items to list via form.
+#### Features
 
-Remove items from list by clicking the "X" button.
+* Add items to list via form.
 
-Clear all items with "clear" button.
+* Remove items from list by clicking the "X" button.
 
-Filter the items by typing in the filter field.
+* Clear all items with "clear" button.
 
-Add localStorage to persist items.
+* Filter the items by typing in the filter field.
 
-Click on an item to put into "edit mode" and add to form.
+* Add localStorage to persist items.
 
-Update item.
+* Edit item:
+    ```Click on the item to 'edit' it. Press 'Enter/Return' Key to save.```
+* Update item
+   ```Click the item to Edit, Press 'Enter/Return' Key to save.```
 
-Deploy to Netlify.
+* Deploy to Netlify.
