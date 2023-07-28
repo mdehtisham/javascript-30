@@ -131,7 +131,10 @@ header h1 {
 .display-block{
   display: block;
 }
-
+.input-edit{
+  padding: 5px;
+  width: 95%;
+}
 @media (max-width: 500px) {
   .items li {
     width: 100%;
