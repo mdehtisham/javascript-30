@@ -1,4 +1,3 @@
-console.log(window.location.pathname)
 
 const global = {
     currentPage: window.location.pathname
@@ -20,7 +19,6 @@ function highlightActiveLink(){
 // Display Popular Movies/Shows
 async function displayPopular(query){
     const {results} = await fetchApiData(`${query}/popular`)
-    console.log('result=>', results)
     results.forEach(result => {
         const div = document.createElement('div');
         div.classList.add('card');
@@ -61,9 +59,7 @@ function displayBackgroundImage(type, path){
 //Display Details
 async function displayDetails(query){
     const movieId = window.location.search.split('=')[1]
-    console.log('movie id' , movieId)
     const result = await fetchApiData(`${query}/${movieId}`)
-    console.log('show', result)
     displayBackgroundImage(query, result.backdrop_path);
     const div = document.createElement('div');
     div.innerHTML = `
@@ -89,16 +85,28 @@ async function displayDetails(query){
                 <ul>
                     ${result.genres.map(g => `<li>${g.name}</li>`).join('')}
                 </ul>
-                <a href="${result.homepage}" target="_blank" class="btn">Visit Movie Home Page</a>
+                ${result.homepage ? 
+                `<a href="${result.homepage}" target="_blank" class="btn">Visit ${query === 'movie' ? 'Movie' : 'Show'} Home Page</a>`:
+                ``
+                }
+                
             </div>
         </div>
         <div class="details-bottom">
             <h2>Movie Info</h2>
             <ul>
+            ${query === 'movie' ? 
+            `
                 <li><span class="text-secondary">Budget: </span> $${addCommasToNumber(result.budget)}</li>
                 <li><span class="text-secondary">Revenue: </span> $${addCommasToNumber(result.revenue)}</li>
                 <li><span class="text-secondary">Runtime: </span> ${result.runtime} minutes</li>
                 <li><span class="text-secondary">Status: </span> ${result.status}</li>
+            ` :
+            `
+                <li><span class="text-secondary">Number of Seasons: </span> ${result.number_of_seasons}</li>
+                <li><span class="text-secondary">Number of Episodes: </span> ${result.number_of_episodes}</li>
+                <li><span class="text-secondary">Status: </span> ${result.status}</li>
+            `}
             </ul>
             <h4>Production Companies</h4>
             <div class="list-group">
@@ -130,19 +138,16 @@ async function fetchApiData(endpoint){
 function init(){
     switch (global.currentPage){
         case '/movie-flix/index.html':
-            console.log('Home');
-            displayPopular('movie')
+            displayPopular('movie');
+            displaySlider();
             break;
         case '/movie-flix/shows.html':
-            console.log('shows');
             displayPopular('tv')
             break;
         case '/movie-flix/movie-details.html':
-            console.log('movie details');
             displayDetails('movie');
             break;
         case '/movie-flix/tv-details.html':
-            console.log('tv details');
             displayDetails('tv')
             break;
         case '/movie-flix/search.html':
@@ -160,5 +165,50 @@ function showSpinner(){
 function hideSpinner(){
     document.querySelector('.spinner').classList.remove('show');
 }
+
+async function displaySlider(){
+    const {results} = await fetchApiData('movie/now_playing');
+    console.log(results)
+    results.forEach(result => {
+        const div = document.createElement('div');
+        div.classList.add('swiper-slide')
+        div.innerHTML = `
+            <a href="movie-details.html?id=${result.id}">
+                <img src="http://image.tmdb.org/t/p/w500${result.poster_path}" alt="${result.title}"/>
+            </a>
+            <h4 class="swiper-rating">
+                <i class="fas fa-start text-secondary"></i>
+                ${result.vote_average} / 10
+            </h4>
+        `
+        document.querySelector('.swiper-wrapper').appendChild(div)
+        initSwiper();
+    })
+}
+
+function initSwiper(){
+    const swiper = new Swiper('.swiper',{
+        slidesPerView: 1,
+        spaceBetween: 30,
+        freeMode: true,
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false
+        },
+        breakpoints: {
+            500: {
+                slidesPerView: 2
+            },
+            700: {
+                slidesPerView: 3
+            },
+            1200: {
+                slidesPerView: 4
+            }
+        }
+    })
+}
+
 
 document.addEventListener('DOMContentLoaded', init)
