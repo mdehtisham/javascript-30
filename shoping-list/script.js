@@ -38,7 +38,6 @@ function addItemToDOM(item){
     // create new list item
     const li = document.createElement('li')
     li.append(document.createTextNode(item))
-    console.log(li)
     const button = createButton('remove-item btn-link text-red')
     li.appendChild(button)
     itemList.appendChild(li)
