@@ -12,6 +12,24 @@ theaterBtn.addEventListener('click', toggleTheaterMode)
 miniPlayerBtn.addEventListener('click', toggleMiniPlayerMode)
 fullScreenBtn.addEventListener('click', toggleFullScreenMode)
 
+function toggleTheaterMode(){
+    videoContainer.classList.toggle("theater")
+}
+function toggleFullScreenMode(){
+    if(document.fullscreenElement == null){
+        videoContainer.requestFullscreen();
+    }else{
+        document.exitFullscreen()
+    }
+}
+function toggleMiniPlayerMode(){
+    if(videoContainer.classList.contains('mini-player')){
+        document.exitPictureInPicture();
+    }else{
+        video.requestPictureInPicture()
+    }
+}
+
 // Volume
 muteBtn.addEventListener('click', toggleMute)
 volumeSlider.addEventListener('input', e => {
@@ -38,24 +56,6 @@ video.addEventListener('volumechange', ()=> {
     videoContainer.dataset.volumeLevel = volumeLevel;
 })
 
-
-function toggleTheaterMode(){
-    videoContainer.classList.toggle("theater")
-}
-function toggleFullScreenMode(){
-    if(document.fullscreenElement == null){
-        videoContainer.requestFullscreen();
-    }else{
-        document.exitFullscreen()
-    }
-}
-function toggleMiniPlayerMode(){
-    if(videoContainer.classList.contains('mini-player')){
-        document.exitPictureInPicture();
-    }else{
-        video.requestPictureInPicture()
-    }
-}
 
 // listen for mini-player enterpictureinpicture event
 video.addEventListener('enterpictureinpicture', ()=> {
