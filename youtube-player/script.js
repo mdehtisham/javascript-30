@@ -6,6 +6,8 @@ const miniPlayerBtn = document.querySelector('.mini-player-btn')
 const fullScreenBtn = document.querySelector('.full-screen-btn')
 const muteBtn = document.querySelector('.mute-btn')
 const volumeSlider = document.querySelector('.volume-slider')
+const currentTimeEl = document.querySelector('.current-time')
+const totalTimeEl = document.querySelector('.total-time')
 
 // Viewing Modes
 theaterBtn.addEventListener('click', toggleTheaterMode)
@@ -28,6 +30,18 @@ function toggleMiniPlayerMode(){
     }else{
         video.requestPictureInPicture()
     }
+}
+
+// Handeling duration
+video.addEventListener('loadeddata', () => {
+    totalTimeEl.textContent = formatDuration(video.duration)
+})
+
+
+function formatDuration(time){
+    const seconds = Math.floor(time % 60);
+    const minutes = Math.floor(time / 60) % 60
+    const hours = Math.floor(time / 3600)
 }
 
 // Volume
